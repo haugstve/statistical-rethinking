@@ -1,0 +1,243 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Chapter 2},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Chapter 2}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\section{Hard question 1}\label{hard-question-1}
+
+\emph{Suppose there are two species of Species Bear. Both are equally
+common in the wild and live in the same places. They look exactly alike
+and eat the same food, and there is yet no genetic assay capable of
+telling them apart. They differ however in their family sizes. Species A
+gives birth to twins 10\% of the time, otherwise birthing a single
+infant. Species B births twins 20\% of the time, otherwise birthing
+singleton infants. Assume these numbers are known with certainty, from
+many years of field research.}
+
+\emph{Now suppose you are managing a captive Species Breeding program.
+You have a new female panda of unknown species, and she has just given
+birth to twins. What is the probability that her next birth will also be
+twins?}
+
+The important information about the two species.
+
+Species A:
+
+\begin{itemize}
+\tightlist
+\item
+  10\% Twins, \(\textrm{P}(\textrm{Twin} \mid \textrm{Species A})\)
+\item
+  90\% Single infant
+\end{itemize}
+
+Species B:
+
+\begin{itemize}
+\tightlist
+\item
+  20\% Twins, \(\textrm{P}(\textrm{Twin} \mid \textrm{Species B})\)
+\item
+  80 \% Single infant
+\end{itemize}
+
+The problem is divided up using total probaility:
+
+\[  \textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  =  \textrm{P}(\textrm{Twin} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + \textrm{P}(\textrm{Twin} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) \]
+
+Two of the probabilites are given directly in the excersise. Inserting
+these into the expression gives
+\[  \textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  =  0.1 \times\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + 0.2 \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) \]
+
+Calculating the missing probabilites is done using bayes rule. First for
+Species A
+\[ \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})    = \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{\textrm{P}( \textrm{Previous twin})} = \frac{0.1 \times 0.5}{\textrm{P}(\textrm{Previous twin})}\]
+
+To complete the calculation the probability of a twin is needed. Total
+probaility can be used
+\[ \textrm{P}(\textrm{Previous twin}) = \textrm{P}(\textrm{Previous twin} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Previous twin} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) = 0.1 \times 0.5 + 0.2 \times 0.5 = 0.15 \]
+
+Inserting this back into the bayes rule applied on the probability the
+panda being from Species A completes that calculation
+\[ \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})    =  \frac{0.1 \times 0.5}{0.15} = 0.33\]
+
+The same calculation is repeated for Species B
+\[ \textrm{P}(\textrm{Species B} \mid \textrm{Previous twin})    =  \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species B} ) \times \textrm{P}(\textrm{Species B})}{\textrm{P}( \textrm{Previous twin})} = \frac{0.2 \times 0.5}{0.15} = 0.66 \]
+
+Finally the two probabilites calcutated using Bayes rule can go back
+into the original expression
+\[  \textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  =  0.1 \times\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + 0.2 \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) = 0.1  \times  0.33  + 0.2  \times 0.66  =  0.165 = 16.5\%\]
+
+16.5\% makes sence. The probability is more than just taking the average
+probability of having twins from the two species. SInce the previous
+litter was twins, it increased the probability of the panda being from
+species B and therefore the probability of the panda giving birth to
+twins.
+
+\section{Hard Question 2}\label{hard-question-2}
+
+\emph{Recall all the facts from the problem above. Now compute the
+probability that the panda we have is from species A, assuming we have
+observed only the first birth and that it was twins.}
+
+This was calculated in question 1
+
+\[ \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})    = \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{\textrm{P}( \textrm{Previous twin})} = \frac{0.1 \times 0.5 }{0.15} =0.33 = 33\%\]
+
+\section{Hard Question 3}\label{hard-question-3}
+
+Continuing on from the previous problem, suppose the same panda mother
+has a second birth and that it is not twins, but a singleton infant.
+Compute the posterior probability that this panda is species A.
+
+The question expressed in symbols becomes
+\[ \textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} ))   \]
+
+\subsection{Aproach 1}\label{aproach-1}
+
+This can be solved using bayes
+\[ \textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} ))   = \frac{\textrm{P}( ( \textrm{Second singelton} \cap  \textrm{First twin} ) \mid \textrm{Species A} ) \times \textrm{P}(   \textrm{Species A} )}{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )}  \]
+\[   \frac{\textrm{P}( ( \textrm{Second singelton} \cap  \textrm{First twin} ) \mid \textrm{Species A} ) \times \textrm{P}(   \textrm{Species A} )}{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} = \frac{ \textrm{P}(\textrm{Second singelton}  \mid \textrm{Species A}) \times \textrm{P}(  \textrm{First twin}  \mid \textrm{Species A})  ) \times \textrm{P}(   \textrm{Species A} ) }{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} ) }\]
+Using that the two events: the second being a singelton given the
+species is A i and the first being a twin given the species is A, are
+independent. We can calulate the probaiblity useing multiplication.
+
+\[   \frac{ \textrm{P}(\textrm{Second singelton}  \mid \textrm{Species A}) \times \textrm{P}(  \textrm{First twin}  \mid \textrm{Species A})  ) \times \textrm{P}(   \textrm{Species A} ) }{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} ) } = \frac{0.9 \times 0.1 \times 0.5}{\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} \]
+
+To adress the denominator we use total pobability.
+\[  {\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} =  {\textrm{P}( (\textrm{Second singelton} \cap  \textrm{First twin} ) \mid  \textrm{Species A})} \times  \textrm{P}(   \textrm{Species A} ) +  {\textrm{P}( (\textrm{Second singelton} \cap  \textrm{First twin} ) \mid  \textrm{Species B})} \times \textrm{P}(   \textrm{Species B} )\]
+Using that the conditional probabilites are independent the probabilites
+can be calulated using multiplication.
+\[  {\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} = 0.9 \times 0.1 \times 0.5 +  0.8 \times 0.2 \times 0.5 = 0.125 \]
+Inserting this
+
+\[ \textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} )) = \frac{0.9 \times 0.1 \times 0.5}{0.125} = 0.36 = 36\%\]
+\#\# Aproach 2 Appraoch 1 was allot of work. Stating with what we know
+from question 2 it can be done faseter.
+
+\textbf{The prior is now updated and with it so are the probabilites.
+Keeping the notation simple \(\textrm{P}(\textrm{Species A}\) now takes
+a new value without an updated notation.}
+
+\[ \textrm{P}(\textrm{Species A} \mid  \textrm{Second singelton})  =   \frac{\textrm{P}( \textrm{Second singelton}\mid\textrm{Species A} )\textrm{P}(\textrm{Species A})}{\textrm{P}(\textrm{Second singeltion}) }  = \frac{ 0.9 \times  0.33}{\textrm{P}(\textrm{Second singeltion}) }\]
+\[\textrm{P}(\textrm{Second singeltion}) = \textrm{P}(\textrm{Second singeltion} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A})  + \textrm{P}(\textrm{Second singeltion} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species A}) = 0.9 \times 0.33 + 0.8 \times 0.66 = 0.825\]
+
+\[ \textrm{P}(\textrm{Species A} \mid  \textrm{Second singelton})  = \frac{ 0.9 \times  0.33}{\textrm{P}(\textrm{Second singeltion}) } =  \frac{ 0.9 \times  0.33}{ 0.825 } = 0.36 = 36\% \]
+
+\section{Hard Question 4}\label{hard-question-4}
+
+A common boast of Bayesian statisticians is that Bayesian inference
+makes it easy to use all of the data, even if the data are of different
+types.
+
+So suppose now that a veterinarian comes along who has a new genetic
+test that she claims can identify the species of our mother panda. But
+the test, like all tests, is imperfect. This is the information you have
+about the test: - The probability it correctly identifies a species A
+panda is 0.8. - The probability it correctly identifies a species B
+panda is 0.65. The vet administers the test to your Species And tells
+you that the test is positive for species A. First ignore your previous
+information from the births and compute the posterior probability that
+your panda is species A. Then redo your calculation, now using the birth
+data as well.
+
+Ignoring the adjustemnts to the priors we use bayes
+\[\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{\textrm{P}(  \textrm{Tested as A}\mid  \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{ \textrm{P}(\textrm{Tested as A}) } = \frac{0.8 \times 0.5}{\textrm{P}(\textrm{Tested as A})}\]
+\[\textrm{P}(\textrm{Tested as A}) =  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) = 0.8 \times 0.5 + 0.35 \times 0.5 = 0.575\]
+
+\[\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{0.8 \times 0.5}{\textrm{P}(\textrm{Tested as A})} = \frac{0.8 \times 0.5}{ 0.575 } = 0.696 = 69.6\%\]
+
+Including the updated priors due to the testing gives anoter result. As
+in question 3 approach 2 this means the probabilites are updated wihout
+updating the notation.
+
+\[\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{\textrm{P}(  \textrm{Tested as A}\mid  \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{ \textrm{P}(\textrm{Tested as A}) } = \frac{0.8 \times 0.36}{\textrm{P}(\textrm{Tested as A})}\]
+
+\[\textrm{P}(\textrm{Tested as A}) =  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) = 0.8 \times 0.36 + 0.35 \times 0.56 = 0.484\]
+
+\[\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{0.8 \times 0.36}{\textrm{P}(\textrm{Tested as A})} = \frac{0.8 \times 0.36}{  0.484}  =  0.595 = 59.5\% \]
+
+
+\end{document}

@@ -1,0 +1,268 @@
+---
+title: "Chapter 2"
+---
+
+
+# Medium question 1
+
+*Recall the globe tossing model from the chapter. Compute and plot the grid approximate posterior distribution for each of the following sets of observations. In each case, assume a uniform prior for $p$.*
+
+```{r}
+#define grid 
+p_grid <- seq(from=0, to=1, length.out=20) 
+
+#define prior 
+prior <- rep(1, 20)
+
+data1 = c("W",'W','W')
+data2 = c('W','W','W',"L")
+data3 = c('L','W','W',"L",'W','W','W')
+
+
+#compute likelihood at each value in grid 
+likelihood1 <- dbinom( sum(data1=="W"), size=length(data1), prob=p_grid) 
+likelihood2 <- dbinom( sum(data2=="W"), size=length(data2), prob=p_grid)
+likelihood3 <- dbinom( sum(data3=="W"), size=length(data3), prob=p_grid)
+
+#compute product of likelihood and prior 
+unstd.posterior1 <- likelihood1 * prior 
+unstd.posterior2 <- likelihood2 * prior 
+unstd.posterior3 <- likelihood3 * prior 
+
+#standardize the posterior, so it sums to 1 
+posterior1 <- unstd.posterior1/ sum(unstd.posterior1)
+posterior2 <- unstd.posterior2/ sum(unstd.posterior2)
+posterior3 <- unstd.posterior3/ sum(unstd.posterior3)
+```
+
+```{r}
+plot(p_grid,prior)
+
+```
+
+
+
+```{r}
+plot(p_grid,posterior1)
+plot(p_grid,posterior2)
+plot(p_grid,posterior3)
+```
+
+
+
+# Medium question 2
+
+*Now assume a prior for p that is equal to zero when $p < 0.5$ and is a positive constant when $p ≥ 0.5$. Again compute and plot the grid approximate posterior distribution for each of the sets of observations in the problem just above.*
+
+```{r}
+prior2 = ifelse(p_grid < 0.5, 0, 1)
+unstd.posterior4 <- likelihood1 * prior2 
+unstd.posterior5 <- likelihood2 * prior2 
+unstd.posterior6 <- likelihood3 * prior2
+
+#standardize the posterior, so it sums to 1 
+posterior4 <- unstd.posterior4/ sum(unstd.posterior4)
+posterior5 <- unstd.posterior5/ sum(unstd.posterior5)
+posterior6 <- unstd.posterior6/ sum(unstd.posterior6)
+```
+
+
+```{r}
+plot(p_grid,prior2)
+plot(p_grid,posterior4)
+plot(p_grid,posterior5)
+plot(p_grid,posterior6)
+```
+
+
+# Hard question 1
+
+*Suppose there are two species of Species Bear. Both are equally common in the wild and live in the same places. They look exactly alike and eat the same food, and there is yet no genetic assay capable of telling them apart. They differ however in their family sizes. Species A gives birth to twins 10% of the time, otherwise birthing a single infant. Species B births twins 20% of the time, otherwise birthing singleton infants. Assume these numbers are known with certainty, from many years of field research.*
+
+*Now suppose you are managing a captive Species Breeding program. You have a new female panda of unknown species, and she has just given birth to twins. What is the probability that her next birth will also be twins?*
+
+The important information about the two species.
+
+ Species A:
+ 
+  - 10% Twins, $\textrm{P}(\textrm{Twin} \mid \textrm{Species A})$
+  - 90% Single infant
+ 
+ Species B:
+ 
+  - 20% Twins,  $\textrm{P}(\textrm{Twin} \mid \textrm{Species B})$
+  - 80 % Single infant
+
+
+The problem is divided up using total probaility:
+
+$$  \textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  =  \textrm{P}(\textrm{Twin} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + \textrm{P}(\textrm{Twin} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) $$
+
+Two of the probabilites are given directly in the excersise. Inserting these into the expression gives
+$$  \textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  =  0.1 \times\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + 0.2 \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) $$
+
+Calculating the missing probabilites is done using bayes rule. First for Species A
+$$ 
+\begin{aligned}
+\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})   & = \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{\textrm{P}( \textrm{Previous twin})} \\
+& = \frac{0.1 \times 0.5}{\textrm{P}(\textrm{Previous twin})}
+\end{aligned}
+$$
+
+
+
+To complete the calculation the probability of a twin is needed. Total probaility can be used
+$$
+\begin{aligned}
+\textrm{P}(\textrm{Previous twin}) &= \textrm{P}(\textrm{Previous twin} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Previous twin} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) \\
+&= 0.1 \times 0.5 + 0.2 \times 0.5 = 0.15 \end{aligned}
+$$
+
+Inserting this back into the bayes rule applied on the probability the panda being from Species A completes that calculation 
+$$ \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})    =  \frac{0.1 \times 0.5}{0.15} = 0.33$$
+
+The same calculation is repeated for Species B
+$$ \textrm{P}(\textrm{Species B} \mid \textrm{Previous twin})    =  \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species B} ) \times \textrm{P}(\textrm{Species B})}{\textrm{P}( \textrm{Previous twin})} = \frac{0.2 \times 0.5}{0.15} = 0.66 $$
+
+Finally the two probabilites calcutated using Bayes rule can go back into the original expression
+$$ 
+\begin{aligned}
+\textrm{P}(\textrm{Twin} \mid \textrm{Previous twin})  &=  0.1 \times\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) + 0.2 \times \textrm{P}(\textrm{Species A} \mid \textrm{Previous twin}) \\
+ &= 0.1  \times  0.33  + 0.2  \times 0.66  =  0.165 = 16.5\%
+\end{aligned}
+$$
+
+16.5% makes sence. The probability is more than just taking the average probability of having twins from the two species. SInce the previous litter was twins, it increased the probability of the panda being from species B and therefore the probability of the panda giving birth to twins.
+
+# Hard Question 2
+*Recall all the facts from the problem above. Now compute the probability that the panda we have is from species A, assuming we have observed only the first birth and that it was twins.*
+
+This was calculated in question 1
+
+$$ 
+\begin{aligned}
+\textrm{P}(\textrm{Species A} \mid \textrm{Previous twin})    & = \frac{ \textrm{P}( \textrm{Previous twin} \mid \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{\textrm{P}( \textrm{Previous twin})} \\
+& = \frac{0.1 \times 0.5 }{0.15} =0.33 = 33\%
+\end{aligned}
+$$
+
+# Hard Question 3
+
+*Continuing on from the previous problem, suppose the same panda mother has a second birth and that it is not twins, but a singleton infant. Compute the posterior probability that this panda is species A.*
+
+The question expressed in symbols becomes
+$$ \textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} ))   $$
+
+## Aproach 1
+This can be solved using bayes rule
+$$ \textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} ))   = \frac{\textrm{P}( ( \textrm{Second singelton} \cap  \textrm{First twin} ) \mid \textrm{Species A} ) \times \textrm{P}(   \textrm{Species A} )}{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )}  $$
+
+The intersection of two events that are independent can be calculated by multiplication. Using this and that the two events, the second litter being a singelton given the species is of type A and the first litter being twins given the species is A, are independen, the  probability can be expressed as a multiplication.
+
+$$  
+\begin{aligned}
+\textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} ))   &= \frac{\textrm{P}( ( \textrm{Second singelton} \cap  \textrm{First twin} ) \mid \textrm{Species A} ) \times \textrm{P}(   \textrm{Species A} )}{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )}  \\
+& = \frac{ \textrm{P}(\textrm{Second singelton}  \mid \textrm{Species A}) \times \textrm{P}(  \textrm{First twin}  \mid \textrm{Species A})  ) \times \textrm{P}(   \textrm{Species A} ) }{ \textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} ) } \\
+& = \frac{0.9 \times 0.1 \times 0.5}{\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )}
+\end{aligned}
+$$
+
+
+To calculate the denominator total pobability is used. 
+$$ 
+\begin{align}
+{\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} & =  {\textrm{P}( (\textrm{Second singelton} \cap  \textrm{First twin} ) \mid  \textrm{Species A})} \times  \textrm{P}(   \textrm{Species A} ) \\
+& \;\;\; + {\textrm{P}( (\textrm{Second singelton} \cap  \textrm{First twin} ) \mid  \textrm{Species B})} \times \textrm{P}(   \textrm{Species B} ) \\
+& =   0.9 \times 0.1 \times 0.5 +  0.8 \times 0.2 \times 0.5 = 0.125
+\end{align}
+$$
+Inserting this probability back into the original equation gives the answere
+
+$$ 
+\textrm{P}(\textrm{Species A} \mid ( \textrm{Second singelton} \cap  \textrm{First twin} )) =  \frac{0.9 \times 0.1 \times 0.5}{\textrm{P}( \textrm{Second singelton} \cap  \textrm{First twin} )} =  \frac{0.9 \times 0.1 \times 0.5}{0.125} = 0.36 = 36\%
+$$
+
+
+## Aproach 2
+Appraoch 1  was allot of work. Stating with what we know from question 2 the calculations can be simplified
+
+**The prior is now updated to what we learned from question 2 and with it so are the probabilites. Keeping the notation simple $\textrm{P}(\textrm{Species A})$ now takes the updated value without an updated notation.**
+
+Starting with the same  problem formulation
+
+$$ 
+\textrm{P}(\textrm{Species A} \mid  \textrm{Second singelton})  =   \frac{\textrm{P}( \textrm{Second singelton}\mid\textrm{Species A} )\textrm{P}(\textrm{Species A})}{\textrm{P}(\textrm{Second Singelton}) }  = \frac{ 0.9 \times  0.33}{\textrm{P}(\textrm{Second Singelton}) }
+$$
+
+
+The only caluclation needed is the probaility of the second litter being a singeltiopn given the updated prior.
+
+$$
+\begin{align}
+\textrm{P}(\textrm{Second Singelton}) &= \textrm{P}(\textrm{Second Singelton} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A})  \\
+ & \;\;\;\;+ \textrm{P}(\textrm{Second Singelton} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species A}) \\
+ & = 0.9 \times 0.33 + 0.8 \times 0.66 = 0.825
+\end{align}
+$$
+
+Putting the probability int the calculation we se that aproach 2 gave the same result as aproach 1
+
+$$ 
+\textrm{P}(\textrm{Species A} \mid  \textrm{Second singelton})  = \frac{ 0.9 \times  0.33}{\textrm{P}(\textrm{Second Singelton}) } =  \frac{ 0.9 \times  0.33}{ 0.825 } = 0.36 = 36\% 
+$$
+
+# Hard Question 4
+
+*A common boast of Bayesian statisticians is that Bayesian inference makes it easy to use all of the data, even if the data are of different types.*
+
+*So suppose now that a veterinarian comes along who has a new genetic test that she claims can identify the species of our mother panda. But the test, like all tests, is imperfect. This is the information you have about the test: *
+
+- *The probability it correctly identifies a species A panda is 0.8.*
+- *The probability it correctly identifies a species B panda is 0.65. The vet administers the test to your Species And tells you that the test is positive for species A. First ignore your previous information from the births and compute the posterior probability that your panda is species A. Then redo your calculation, now using the birth data as well.*
+
+## Ignoring the information about the previous litters
+
+Using bayes 
+$$
+\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{\textrm{P}(  \textrm{Tested as A}\mid  \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{ \textrm{P}(\textrm{Tested as A}) } = \frac{0.8 \times 0.5}{\textrm{P}(\textrm{Tested as A})}
+$$
+The missing probability is calculated using total probability
+
+$$
+\begin{align}
+\textrm{P}(\textrm{Tested as A}) & =  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) \\
+ & = 0.8 \times 0.5 + 0.35 \times 0.5 = 0.575
+\end{align}
+$$
+Inserting the probability into the original expression answers the question
+$$
+\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{0.8 \times 0.5}{\textrm{P}(\textrm{Tested as A})} = \frac{0.8 \times 0.5}{ 0.575 } = 0.696 = 69.6\%
+$$
+Note that the probability of it being species A is less than the probability of the test correctly identifying a panda from species A. This is because the test has some probability (actually quite allot of probability) of erroneously identifing a panda of species B asspecies A.
+
+## Using information from the previous litters
+
+Including the infromation about the earlier litters requires us to use updated priors. As in question 3 approach 2 ** the probabilites are updated wihout updating the notation**.
+
+The approach will be identical, but the probaqbilites will not.  Starting with bayes
+
+$$
+\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{\textrm{P}(  \textrm{Tested as A}\mid  \textrm{Species A} ) \times \textrm{P}(\textrm{Species A})}{ \textrm{P}(\textrm{Tested as A}) } = \frac{0.8 \times 0.36}{\textrm{P}(\textrm{Tested as A})}
+$$
+Then using total probability
+
+$$
+\begin{align}
+\textrm{P}(\textrm{Tested as A}) & =  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species A}) \times \textrm{P}(\textrm{Species A}) +  \textrm{P}(\textrm{Tested as A} \mid \textrm{Species B}) \times \textrm{P}(\textrm{Species B}) \\
+& = 0.8 \times 0.36 + 0.35 \times 0.56 = 0.484
+\end{align}
+$$
+
+Finaly the probability is inserted back
+
+$$
+\textrm{P}(\textrm{Species A} \mid  \textrm{Tested as A})  = \frac{0.8 \times 0.36}{\textrm{P}(\textrm{Tested as A})} = \frac{0.8 \times 0.36}{0.484} = 0.595 = 59.5\%
+$$
+
+
+This is less than the probability calculated ignoring the information about the litters. This is as expected. Since the probability of the panda being of species A was less than 50% when information about its the litters where included the infromation should decrese the probability. 

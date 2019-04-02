@@ -1,0 +1,26 @@
+---
+title: "Chapter 2"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# Hard question 1
+
+Suppose there are two species of panda bear. Both are equally common in the wild and live in the same places. They look exactly alike and eat the same food, and there is yet no genetic assay capable of telling them apart. They differ however in their family sizes. Species A gives birth to twins 10% of the time, otherwise birthing a single infant. Species B births twins 20% of the time, otherwise birthing singleton infants. Assume these numbers are known with certainty, from many years of field research.
+
+Now suppose you are managing a captive panda breeding program. You have a new female panda of unknown species, and she has just given birth to twins. What is the probability that her next birth will also be twins?
+
+ Species A
+  - 10% Twins
+  - 90% Single infant
+ 
+ Species B
+  - 20% Twins
+  - 80 % Single infant
+  
+  
+
+$$ \textrm{P}(\textrm{Twin} | \textrm{Previous twin})  =  \textrm{P}(\textrm{Twin} | \textrm{Panda A})\textrm{P}(\textrm{Panda A} | \textrm{Previous twin}) + \textrm{P}(\textrm{Twin} | \textrm{Panda B})\textrm{P}(\textrm{Panda A} | \textrm{Previous twin}) $$
+
