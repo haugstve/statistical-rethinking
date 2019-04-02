@@ -1,5 +1,6 @@
 ---
 title: "Chapter 3"
+output: pdf_document
 ---
 
 
@@ -32,14 +33,10 @@ sum(samples < 0.5)/ 1e4
 #between 50 and 75 percent water
 sum( samples > 0.5 & samples < 0.75)/ 1e4
 
-#Blank line
-print("")
 
 # 80 percent of the calculated  percentages are below what value?
 quantile( samples, c(0.8))
 
-#Blank line
-print("")
 
 # extend to 90 and 95 percent also
 quantile( samples, c(0.8,0.9,0.95))
@@ -55,7 +52,6 @@ simplehist( dummy_w, xlab="dummy water count with fixed p")
 
 Dummy samples given the posterior distribution of the probability. 
 ```{r}
-#Blank line
 w <- rbinom( 1e5, size=9, prob=samples)
 simplehist( w, xlab="Dummy water count with the uncertainty in p propagated")
 ```
