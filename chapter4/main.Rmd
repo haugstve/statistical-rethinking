@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 # Theory
@@ -418,7 +420,7 @@ mean_weight <- mean(df3$weight)
 df3$std_weight = (df3$weight - mean_weight) / sd_weight
 ```
 
-However, reasoning about the prior of the slope is now harder. An infant is about 2 kg (close to zero) and 30 cm. An adult maybe 62 kg and 170. This gives a slope of 140cm/60kg$\approx$2.3cm/kg. Allowing zero in the one standard deviation intervall means it the prior is quite weak.
+However, reasoning about the prior of the slope is now harder. An infant is about 2 kg (close to zero) and 30 cm. An adult maybe 62 kg and 170. This gives a slope of 140cm/60kg which is aprox 2.3cm/kg. Allowing zero in the one standard deviation intervall means it the prior is quite weak.
 
 Since the weight is standardised both values should be scaled.
 ```{r}
