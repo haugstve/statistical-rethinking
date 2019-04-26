@@ -349,23 +349,15 @@ plot(df2$weight,df2$height, col=c("red","blue")[as.numeric(df2$age>18)+1])
 ```
 Since children above 30 kg seems to follow the same patern as adults there is no reason to take the data out. The subset is kept.
 
-Normalizing the weight
-```{r}
-mean_weight = mean(df2$weight)
-sd_weight = sd(df2$weight)
-df2$std_weight = (df2$weight-mean_weight)/sd_weight
-```
 
-
-Setting up the model. Adults are normally around 170 cm but for this same uncertanty is large.
-Since you are unlikely to increase more than 5 cm per kg it seems like a relativly weak prior to put the variance of b to five. However, the unit is no longer kg because of the z-transformation. Multiplying with the sd keeps the two values similar. This prior does not include the knowledge that the relationship is most likely positive.
+Setting up the model. Instead of thinking to much about the priors I'm just putting in som really weak priors and let the data talk. 
 ```{r}
 flist <- alist(
   height ~ dnorm(mu,sigma),
-  mu <- a + b*std_weight,
-  a ~ dnorm(170,20),
-  b ~ dnorm(0, 5*sd_weight),
-  sigma ~ dunif(0,30)
+  mu <- a + b*weight,
+  a ~ dnorm(170,50),
+  b ~ dnorm(0, 20),
+  sigma ~ dunif(0, 50)
 )
 ```
 
@@ -378,9 +370,8 @@ model_q1 <- map(flist, data = df2)
 Individual weight expected height 89% interval 1 
 ```{r}
 table_weights <- c(46.95, 43.72, 64.78, 32.59, 54.63)
-table_weights_std <- (table_weights -mean_weight )/sd_weight
 
-height_simulations <- sim(model_q1, data=data.frame(std_weight=table_weights_std))
+height_simulations <- sim(model_q1, data=data.frame(weight=table_weights))
 ```
 
 
@@ -413,31 +404,12 @@ df3 <- df[df$age<18,]
 str(df3)
 ```
 
-Standardising weight makes it easier to reason about the intercept of the linear model. It is the average height. We can guess that that is a 110 cm for children? Another way to look at it is to think about the uncertainty. This depends on age but less than 30cm or more than 190c, should be 3 standard deviations away. In the middle is 110 so that could be the mean. Adding 30 as the standard deviation seams reasonable weak. This gives us the prior for $a$. **In hindsight this is a linear model, there is no need to scale only to center**
-```{r}
-sd_weight <- sd(df3$weight)
-mean_weight <- mean(df3$weight)
-df3$std_weight = (df3$weight - mean_weight) / sd_weight
-```
-
-However, reasoning about the prior of the slope is now harder. An infant is about 2 kg (close to zero) and 30 cm. An adult maybe 62 kg and 170. This gives a slope of 140cm/60kg which is aprox 2.3cm/kg. With zero inside one standard deviation from the mean ensures that the infromative prior does not bias the result significantly.
-
-Since the weights are standardised both values should be scaled.
-```{r}
-b_prior_mean = 2.3 * sd_weight
-b_prior_sd = 3 * sd_weight
-b_prior_mean
-b_prior_sd
-```
-
-
-
 ```{r}
 flist <- alist(
   height ~ dnorm(mu,sigma),
-  mu <- a + b*std_weight,
-  a ~ dnorm(110,30),
-  b ~ dnorm(b_prior_mean, b_prior_sd),
+  mu <- a + b*weight,
+  a ~ dnorm(170,100),
+  b ~ dnorm(0, 20),
   sigma ~ dunif(0,50)
 )
 ```
@@ -449,20 +421,14 @@ model_children <- map(flist, data = df3)
 ```{r}
 precis(model_children, cor = TRUE)
 ```
-I  happy with the priors. They seem to fit what we see in the data. Plotting mu to have a look at the incline. Because of the weights was scaled 
 
-**(a) 10 units increase in weights results in about**
-```{r}
-round(24.31	/ sd_weight,1) * 10
-```
-**27 cm increase in height**
-
+**(a) 10 units increase in weights results in about 2.7cm/kg*10 kg = 27 cm **
 
 
 ```{r}
-std_weight_seq <-  seq(-3,3,by=0.05)
-mu <-  link(model_children, data = data.frame(std_weight = std_weight_seq))
-height <- sim(model_children, data = data.frame(std_weight = std_weight_seq))
+weight_seq <-  seq(2,70,by=0.5)
+mu <-  link(model_children, data = data.frame(weight = weight_seq))
+height <- sim(model_children, data = data.frame(weight = weight_seq))
 ```
 
 
@@ -475,20 +441,14 @@ height.HDPI <-  apply(height, 2, HPDI, prob=0.89)
 
 #plot raw data 
 #fading out points to make line and interval more visible 
-plot( height ~ std_weight, data=df3, col=col.alpha(rangi2,0.5), xaxt = "n")
+plot( height ~ weight, data=df3, col=col.alpha(rangi2,0.5), xaxt = "n")
 #plot the MAP line, aka the mean mu for each weight
-lines(std_weight_seq, mu.mean) 
+lines(weight_seq, mu.mean) 
 #plot a shaded region for 89% HPDI 
-shade(mu.HPDI,std_weight_seq)
-shade(height.HDPI , std_weight_seq)
-
-at = c(-1, 0, 1, 2, 3)
-labels = round(at*sd_weight+mean_weight,1)
-axis(1, at =  at , labels = labels)
-
-
+shade(mu.HPDI,weight_seq)
+shade(height.HDPI , weight_seq)
 ```
-(c) It is not a good model and the uncertainty is irrelevant compared to the poor fit. Taking into account the non-linearity would result in a model which fits the data. This will result in less variance and more accurat predictions.
+**(c) It is not a good model and the uncertainty is irrelevant compared to the poor fit. Taking into account the non-linearity would result in a model which fits the data. This will result in less variance and a more accurat predictions.**
 
 
 ## Question 3
